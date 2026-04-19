@@ -24,7 +24,9 @@ export async function POST(request: NextRequest) {
     if (ext === 'pdf') {
       const buffer = Buffer.from(await file.arrayBuffer());
       // Dynamic import avoids pdf-parse init side-effects at module load time
-      const pdfParse = (await import('pdf-parse')).default;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mod = await import('pdf-parse') as any;
+      const pdfParse = mod.default ?? mod;
       const data = await pdfParse(buffer);
       const text = data.text.trim();
 
